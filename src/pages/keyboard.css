@@ -1,0 +1,26 @@
+.simple-keyboard {
+    background: transparent;
+    height: 100%;
+}
+
+.simple-keyboard .hg-rows {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+}
+
+.simple-keyboard .hg-rows .hg-row {
+    height: 100%;
+}
+
+.simple-keyboard .hg-rows .hg-row .hg-button {
+    height: 100%;
+    font-size: 30px;
+}
+
+.simple-keyboard .hg-button {
+    background: black;
+    color: white;
+    border: 2px solid gray;
+    border-radius: 12px;
+}

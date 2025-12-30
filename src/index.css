@@ -1,0 +1,39 @@
+body {
+  width: 1920px;
+  height: 720px;
+  background: black;
+}
+
+html {
+  background: gray;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  border: none;
+  font-family: "Science Gothic", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "CTRS" 0;
+}
+
+::-webkit-scrollbar {
+    width: 24px;
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+  display: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #222222;
+    border-radius: 12px;
+}
