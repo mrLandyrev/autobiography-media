@@ -2,6 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import NavigationOutlinedIcon from '@mui/icons-material/NavigationOutlined';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Link, NavLink } from "react-router";
 import { Papper } from "./Papper";
 import { Clock } from "./Clock";
@@ -14,6 +15,9 @@ export const Sidebar: FC = () => {
             </Section>
             <Section to={"/"}>
                 <LibraryMusicOutlinedIcon />
+            </Section>
+            <Section to={"/youtube"}>
+                <YouTubeIcon />
             </Section>
         </Container>
         <Clock/>

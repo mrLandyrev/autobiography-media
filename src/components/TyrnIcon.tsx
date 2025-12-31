@@ -8,16 +8,16 @@ import TurnSlightLeftOutlinedIcon from '@mui/icons-material/TurnSlightLeftOutlin
 import TurnSharpLeftOutlinedIcon from '@mui/icons-material/TurnSharpLeftOutlined';
 import UTurnLeftOutlinedIcon from '@mui/icons-material/UTurnLeftOutlined';
 
-export const TurnIcon:FC<{ maneur: string }> = ({maneur: direction}) => {
-    switch (direction) {
-        case "right": return <TurnRightOutlinedIcon style={{fontSize: 30}}/>;
-        case "slight right": return <TurnSlightRightOutlinedIcon style={{fontSize: 30}}/>;
-        case "sharp right": return <TurnSharpRightOutlinedIcon style={{fontSize: 30}}/>;
-        case "straight": return <StraightOutlinedIcon style={{fontSize: 30}}/>;
-        case "uturn": return <UTurnLeftOutlinedIcon style={{fontSize: 30}}/>;
-        case "left": return <TurnLeftOutlinedIcon style={{fontSize: 30}}/>;
-        case "slight left": return <TurnSlightLeftOutlinedIcon style={{fontSize: 30}}/>;
-        case "sharp left": return <TurnSharpLeftOutlinedIcon style={{fontSize: 30}}/>;
-        default: return <>{direction}</>
+export const TurnIcon:FC<{ maneur: string, size?: "small" | "high" }> = ({maneur, size}) => {
+    switch (maneur) {
+        case "right": return <TurnRightOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "slight right": return <TurnSlightRightOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "sharp right": return <TurnSharpRightOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "straight": return <StraightOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "uturn": return <UTurnLeftOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "left": return <TurnLeftOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "slight left": return <TurnSlightLeftOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        case "sharp left": return <TurnSharpLeftOutlinedIcon style={{fontSize: size == "high" ? 100 : 30}}/>;
+        default: return <>{maneur}</>
     }
 } 

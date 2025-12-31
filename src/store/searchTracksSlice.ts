@@ -5,11 +5,19 @@ import { TrackType } from "../types/tracks";
 export interface SearchTracksState {
     query: string;
     list: Array<TrackType & { isDownloading: boolean }>;
+    status: "playing" | "paused" | "empty";
+    current: number;
+    queue: Array<string>;
+    position: number;
 };
 
 const initialState: SearchTracksState = {
     query: "",
     list: [],
+    status: "empty",
+    current: 0,
+    queue: [],
+    position: 0,
 }
 
 export const searchTracksSlice = createSlice({
@@ -53,6 +61,15 @@ export const searchTracksSlice = createSlice({
                 })
             },
         );
+        builder.addMatcher(
+            tracksApi.endpoints.state.matchFulfilled,
+            (state, action) => {
+                state.status = action.payload.status;
+                state.current = action.payload.current;
+                state.queue = action.payload.queue;
+                state.position = action.payload.queue_position;
+            },
+        )
     },
 });
 

@@ -1,5 +1,5 @@
 export type PlayerData = {
-    status: string;
+    status: "playing" | "paused" | "empty";
     current: number;
     queue: Array<string>;
     queue_position: number;

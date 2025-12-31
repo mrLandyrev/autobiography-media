@@ -2,7 +2,8 @@ import { FC, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { useInfoQuery, usePlayTrackMutation, useStateQuery } from "../store/searchTracksApi";
 import { Papper } from "./Papper";
-import useDebounce from "../utils/useDebounce";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const formatTime = (seconds: number): string => {
     const m = Math.trunc(seconds / 60)
@@ -11,10 +12,9 @@ const formatTime = (seconds: number): string => {
 };
 
 export const Player: FC = () => {
-    const { data } = useStateQuery(undefined, {
-        pollingInterval: 1000,
-    })
-
+    const queue = useSelector((state: RootState) => state.searchTracksSlice.queue);
+    const current = useSelector((state: RootState) => state.searchTracksSlice.current);
+    const position = useSelector((state: RootState) => state.searchTracksSlice.position);
     const [triggerPlay] = usePlayTrackMutation()
 
     const qRef = useRef<HTMLDivElement | null>(null);
@@ -41,10 +41,10 @@ export const Player: FC = () => {
         <Queue ref={qRef}>
             <div style={{minWidth: 350, maxWidth: 350, height: "100%"}}></div>
             {
-                data && data.queue.map((track, index) => <Track
+                queue.map((track, index) => <Track
                     id={track}
-                    active={index === data.queue_position}
-                    current={index === data.queue_position ? data.current : undefined}
+                    active={index === position}
+                    current={index === position ? current : undefined}
                     rotated={pos !== index}
                     offseted={pos > index}
                     onClick={() => triggerPlay({ position: index })}

@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from 'react-router';
 import { MusicPage } from './pages/Music';
 import { NavigationPage } from './pages/Navigation';
 import { DefaultTheme } from './types/theme';
+import { Youtube } from './pages/Youtube';
 
 function App() {
 
@@ -45,6 +46,7 @@ function App() {
             <Routes>
               <Route path='/' Component={MusicPage} />
               <Route path='/navigation' Component={NavigationPage} />
+              <Route path='/youtube' Component={Youtube} />
             </Routes>
           </Content>
           <SidebarWrapper>

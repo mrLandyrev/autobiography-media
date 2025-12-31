@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled, { useTheme } from "styled-components";
 import Map, { Layer, MapRef, Marker, Source } from "react-map-gl/maplibre";
 import { SearchInput } from "../components/SearchInput";
@@ -12,6 +12,10 @@ import "./keyboard.css";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Papper } from "../components/Papper";
 import { TurnIcon } from "../components/TyrnIcon";
+import { StepsWidget } from "../widgets/Steps";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store";
+import { setStep } from "../store/routingSlice";
 
 const userPoint = {
     lon: 38.852879,
@@ -35,9 +39,8 @@ export const NavigationPage: FC = () => {
     const [triggerGenerateRoute, { data: routeData }] = useLazyRouteQuery();
     const [showKeyboard, setShowKeyboard] = useState(false);
     const keyboardRef = useRef<any | null>(null);
-    const [routeStep, setRouteStep] = useState<number | undefined>(undefined);
     const theme = useTheme();
-    const stepsRef = useRef<Array<HTMLElement | null>>(new Array());
+    const currentStep = useSelector((state: RootState) => state.routingSlice.step);
 
     const fitMap = useCallback((data: Array<GeoPoint>, bearing?: number) => {
         if (!mapRef.current) {
@@ -46,20 +49,13 @@ export const NavigationPage: FC = () => {
         mapRef.current.fitBounds(fitPoints(data), { bearing: bearing || 0, pitch: 60, padding: { top: 100, bottom: 100, left: 100, right: 400 + 12 + (!!selectedResult ? 400 + 12 : 0) }, maxZoom: 16 });
     }, [mapRef.current])
 
-    
-    const selectRouteStep = useCallback((index: number) => {
-        if (!routeData || routeData.legs.length == 0 || routeData.legs[0].steps.length < index) {
+    useEffect(() => {
+        if (!routeData || routeData.legs.length == 0 || routeData.legs[0].steps.length < currentStep) {
             return;
         }
-        const step = routeData.legs[0].steps[index];
-        setRouteStep(index);
+        const step = routeData.legs[0].steps[currentStep];
         fitMap([{ lat: step.maneuver.location[1], lon: step.maneuver.location[0] }], step.maneuver.bearing_before)
-        stepsRef.current[index]?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            inline: 'center'
-        })
-    }, [fitMap, routeData, stepsRef.current])
+    }, [fitMap, routeData, currentStep])
 
     useEffect(() => {
         setTimeout(() => {
@@ -99,7 +95,9 @@ export const NavigationPage: FC = () => {
                 top: 0,
                 left: 0,
             }}
-            mapStyle="http://192.168.2.105:8086/styles/maptiler-basic/style.json"
+            reuseMaps={true}
+            mapStyle="http://192.168.2.71:8086/styles/maptiler-basic/style.json"
+            maxParallelImageRequests={4}
         >
             {
                 data && data.map((place) => {
@@ -109,30 +107,24 @@ export const NavigationPage: FC = () => {
                                 longitude={place.lon}
                                 latitude={place.lat}
                             >
-                                <div style={{ width: 10, height: 10, background: "red", color: "white" }}></div>
+                                <div style={{ width: 10, height: 10, background: theme.colors.primary, color: "white" }}></div>
                             </Marker>
                         }
                     </>
                 })
             }
             {
-                routeData && routeData.legs[0].steps.map((step, index) => {
-                    return <Marker
-                        longitude={step.maneuver.location[0]}
-                        latitude={step.maneuver.location[1]}
-                        style={{ zIndex: routeStep === index ? 1 : 0}}
-                        
+                routeData && <Marker
+                        longitude={routeData.legs[0].steps[currentStep].maneuver.location[0]}
+                        latitude={routeData.legs[0].steps[currentStep].maneuver.location[1]}
                     >
                         <Papper
                             style={{ width: "fit-content", height: "fit-content", transform: "translate(50%, -50%)" }}
-                            disabled={!!(routeStep && index < routeStep)}
-                            variant={routeStep === index ? "secondary" : "default"}
-                            onClick={() => {selectRouteStep(index)}}
+                            variant={"primary"}
                         >
-                            <TurnIcon maneur={step.maneuver.modifier}/>
+                            <TurnIcon maneur={routeData.legs[0].steps[currentStep].maneuver.modifier} />
                         </Papper>
                     </Marker>
-                })
             }
             {
                 routeData && <Source id="route-source" type="geojson" data={routeData.geometry}>
@@ -148,30 +140,19 @@ export const NavigationPage: FC = () => {
                 </Source>
             }
         </Map>
-        <DataWrapper withKeyboard={showKeyboard}>
-            <PlaceInfo>
-                {
-                    selectedResult && <>
-                        {selectedResult.display_name}
-                        <button onClick={() => triggerGenerateRoute([userPoint, selectedResult])}>Generate route</button>
-                        <button onClick={() => setSelectedResult(undefined)}>Close</button>
-                    </>
-                }
-                {
-                    !selectedResult && routeData && routeData.legs[0] && <SearchResult>
-                        {
-                            routeData.legs[0].steps.map((step, index) => <SearchResultItem
-                                onClick={() => {selectRouteStep(index)}}
-                                disabled={routeStep == undefined || index < routeStep}
-                                variant={routeStep === index ? "secondary" : "default"}
-                                ref={(e) => {stepsRef.current[index] = e}}
-                            >
-                                <TurnIcon maneur={step.maneuver.modifier}/>{!!step.name && " на " + step.name}
-                            </SearchResultItem>)
-                        }
-                    </SearchResult>
-                }
-            </PlaceInfo>
+        {
+            routeData?.legs[0]?.steps && <StepsWidget steps={routeData.legs[0].steps}/>
+        }
+        <DataWrapper withKeyboard={showKeyboard && !selectedResult} split={!!selectedResult}>
+                <PlaceInfo>
+                    {
+                        selectedResult && <>
+                            {selectedResult.display_name}
+                            <button onClick={() => triggerGenerateRoute([userPoint, selectedResult])}>Generate route</button>
+                            <button onClick={() => setSelectedResult(undefined)}>Close</button>
+                        </>
+                    }
+                </PlaceInfo>
             <Search>
                 <SearchInput value={query} onFocusedChange={(state) => setShowKeyboard(state)} onClear={() => { keyboardRef.current?.clearInput(); setQuery(""); }} />
                 {
@@ -212,30 +193,26 @@ const Wrapper = styled.div`
     height: 100%;
     display: flex;
     overflow: hidden;
-    gap: 12px;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
     justify-content: end;
+    align-items: end;
+    z-index: 0;
+    padding-left: 150px;
 `
 
-const MapWrapper = styled.div`
-    position: absolute;
-    inset: 0;
-`;
-
-const DataWrapper = styled.div<{ withKeyboard: boolean }>`
+const DataWrapper = styled.div<{ withKeyboard: boolean, split: boolean }>`
     width: fit-content;
-    height: 100%;
     display: grid;
-    grid-template-columns: 400px 400px;
-    grid-template-rows: 1fr ${props => props.withKeyboard ? "300px" : "0"};
+    height: ${props => props.withKeyboard || props.split ? "100%" : "250px"};
+    grid-template-columns: ${props => props.split ? "400px 400px" : "0px 800px"};;
+    grid-template-rows: ${props => props.withKeyboard && !props.split ? "1fr 300px" : "1fr 0px"};
     gap: 12px;
     z-index: 1;
-    transition: grid-template-rows 1s;
     > * {
         overflow: hidden;
     }
-    margin-right: 12px;
+    transition: 1s;
 `;
 
 const PlaceInfo = styled(Papper)`

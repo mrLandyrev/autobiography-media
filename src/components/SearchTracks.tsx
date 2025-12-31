@@ -11,7 +11,6 @@ import { SearchInput } from "./SearchInput";
 export const SearchTracks: FC = () => {
     const query = useSelector((state: RootState) => state.searchTracksSlice.query);
     const list = useSelector((state: RootState) => state.searchTracksSlice.list);
-    const dispatch = useDispatch();
     const debouncedQ = useDebounce(query, 1000);
     const { isFetching } = useSearchTracksQuery(debouncedQ);
 

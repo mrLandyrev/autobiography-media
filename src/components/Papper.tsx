@@ -1,6 +1,6 @@
 import styled from "styled-components";
 export type PapperProps = {
-    variant?: "default" | "primary" | "secondary",
+    variant?: "default" | "primary" | "secondary" | "borderless",
     disabled?: boolean,
 }
 
@@ -14,6 +14,7 @@ export const Papper = styled.div<PapperProps>`
     border: 2px solid ${(props) => 
         props.variant == "primary" ? props.theme.colors.primary:
         props.variant == "secondary" ? props.theme.colors.secondary:
+        props.variant == "borderless" ? "transparent":
         "gray"};
     border-radius: 12px;
     background: #000000cf;

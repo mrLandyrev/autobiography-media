@@ -3,10 +3,12 @@ import { searchTracksReducer } from "./searchTracksSlice";
 import { tracksApi } from "./searchTracksApi";
 import { geocoderApi } from "./geocoderApi";
 import { routingApi } from "./rotingApi";
+import { routingReducer, routingSlice } from "./routingSlice";
 
 export const store = configureStore({
     reducer: {
         searchTracksSlice: searchTracksReducer,
+        routingSlice: routingReducer,
         [tracksApi.reducerPath]: tracksApi.reducer,
         [geocoderApi.reducerPath]: geocoderApi.reducer,
         [routingApi.reducerPath]: routingApi.reducer,
