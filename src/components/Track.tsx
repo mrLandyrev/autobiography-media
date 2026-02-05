@@ -20,7 +20,10 @@ export const Track: FC<TrackType & {isDownloading: boolean}> = ({ id, title, aut
     } : undefined;
     return <Wrapper
             ref={setNodeRef} style={style} {...listeners} {...attributes}
-            onClick={() => downloaded ? triggerPlay({ track: id }) : triggerCache(id) }
+            onClick={() => downloaded ? triggerPlay({
+                queue_id: "feed",
+                track: id
+            }) : triggerCache(id) }
             isDownloading={isDownloading}
         >
         <Cover src={cover} />
@@ -59,6 +62,7 @@ const Wrapper = styled.div<{ isDownloading: boolean }>`
     border: 2px solid gray;
     background: #222222;
     animation: ${props => props.isDownloading ? downloadingAnimation : "none"};
+    min-height: 64px;
 `
 
 const Cover = styled.img`
@@ -72,11 +76,11 @@ const Info = styled.div`
 
 const Title = styled.div`
     color: white;
-    font-size: 12px;
+    font-size: 30px;
 `;
 const Authors = styled.div`
     color: #a0a0a0;
-    font-size: 10px;
+    font-size: 20px;
 `;
 
 const Actions = styled.div``;

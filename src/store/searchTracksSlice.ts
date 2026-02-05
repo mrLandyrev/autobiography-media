@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { tracksApi } from "./searchTracksApi";
 import { TrackType } from "../types/tracks";
+import { RootState } from "./store";
 
 export interface SearchTracksState {
     query: string;
@@ -26,6 +27,18 @@ export const searchTracksSlice = createSlice({
     reducers: {
         setQuery: (state, action: PayloadAction<string>) => {
             state.query = action.payload;
+        },
+        setStatus: (state, action: PayloadAction<SearchTracksState["status"]>) => {
+            state.status = action.payload;
+        },
+        setCurrent: (state, action: PayloadAction<number>) => {
+            state.current = action.payload;
+        },
+        setQueue: (state, action: PayloadAction<Array<string>>) => {
+            state.queue = action.payload;
+        },
+        setQueuePosition: (state, action: PayloadAction<number>) => {
+            state.position = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -64,8 +77,6 @@ export const searchTracksSlice = createSlice({
         builder.addMatcher(
             tracksApi.endpoints.state.matchFulfilled,
             (state, action) => {
-                state.status = action.payload.status;
-                state.current = action.payload.current;
                 state.queue = action.payload.queue;
                 state.position = action.payload.queue_position;
             },
@@ -73,5 +84,5 @@ export const searchTracksSlice = createSlice({
     },
 });
 
-export const { setQuery } = searchTracksSlice.actions;
+export const { setQuery, setStatus, setCurrent, setQueue, setQueuePosition } = searchTracksSlice.actions;
 export const searchTracksReducer = searchTracksSlice.reducer;

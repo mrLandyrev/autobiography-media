@@ -20,6 +20,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "maplibre-gl": "^5.14.0",
+    "mqtt": "^5.14.1",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-map-gl": "^8.1.0",
@@ -54,5 +55,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/redux-state-sync": "^3.1.10",
+    "redux-state-sync": "^3.1.4"
   }
 }

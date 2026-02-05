@@ -9,7 +9,7 @@ export type Theme = {
 export const DefaultTheme: Theme = {
   colors: {
         primary: "#b42222",
-        secondary: "#dc4747",
-        default: "#414141ff",
+        secondary: "#47dc47ff",
+        default: "rgba(39, 39, 39, 0.73)",
   }
 }

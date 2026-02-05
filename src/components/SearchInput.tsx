@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Papper } from "./Papper";
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { useMqtt } from "../mqtt";
 
 type Props = {
     placeholder?: string;
@@ -29,7 +30,7 @@ export const SearchInput: FC<Props> = ({ value, placeholder, onFocusedChange, on
         onClear?.()
     }, [onClear])
 
-    return <Wrapper onClick={() => onClick?.()} variant={focused ? "primary" : "default"}>
+    return <Wrapper onClick={() => onClick?.()} variant="default">
         <SearchOutlinedIcon style={{ fontSize: 30 }} />
         {
             focused || value
@@ -45,6 +46,8 @@ const Wrapper = styled(Papper)`
     grid-template-columns: auto 1fr auto;
     overflow: hidden;
     gap: 6px;
+    height: fit-content;
+    width: 100%;
 `
 
 const Placeholder = styled.div`

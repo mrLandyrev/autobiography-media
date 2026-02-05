@@ -6,6 +6,10 @@ type RouteResponse = {
     routes: Array<Route>;
 };
 
+type NearestResponse = {
+    waypoints: Array<{name: string}>;
+};
+
 
 export const routingApi = createApi({
     reducerPath: "routingApi",
@@ -22,8 +26,20 @@ export const routingApi = createApi({
                 }
                 return baseQueryReturnValue.routes[0];
             },
+        }),
+        nearest: builder.query<string | null, GeoPoint>({
+            query: (point) => {
+                const q = `${point.lon},${point.lat}`;
+                return `nearest/v1/driving/${q}`;
+            },
+            transformResponse: (response: NearestResponse) => {
+                if (response.waypoints.length === 0) {
+                    return null;
+                }
+                return response.waypoints[0].name;
+            },
         })
     }),
 })
 
-export const { useLazyRouteQuery } = routingApi;
+export const { useLazyRouteQuery, useRouteQuery, useLazyNearestQuery } = routingApi;

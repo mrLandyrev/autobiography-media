@@ -31,11 +31,30 @@ export const tracksApi = createApi({
         playTrack: builder.mutation<undefined, { track?: string, queue_id?: string, position?: number }>({
             query: (body) => ({
                 url: "playPlaylist",
-                body: {track: body.track || "", queue_id: body.queue_id || "feed", position: body.position ?? -1},
+                body: {
+                    track: body.track || "",
+                    queue_id: body.queue_id || "feed",
+                    position: body.position ?? -1
+                },
                 method: "POST",
             })
+        }),
+        pause: builder.query<undefined, undefined>({
+            query: () => `pause`,
+        }),
+        cont: builder.query<undefined, undefined>({
+            query: () => `cont`,
         }),
     }),
 });
 
-export const { useSearchTracksQuery, useCacheQuery, usePlayTrackMutation, useLazyCacheQuery, useStateQuery, useInfoQuery } = tracksApi;
+export const {
+    useSearchTracksQuery,
+    useCacheQuery,
+    usePlayTrackMutation,
+    useLazyCacheQuery,
+    useStateQuery,
+    useInfoQuery,
+    useLazyPauseQuery,
+    useLazyContQuery,
+} = tracksApi;

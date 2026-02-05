@@ -1,14 +1,28 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import styled, { ThemeProvider } from 'styled-components';
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router';
 import { MusicPage } from './pages/Music';
-import { NavigationPage } from './pages/Navigation';
+import { NavigationPage } from './pages/Navigation/Navigation';
 import { DefaultTheme } from './types/theme';
 import { Youtube } from './pages/Youtube';
+import "react-simple-keyboard/build/css/index.css";
+import { Dashboard } from './pages/Dashboard/Dashboard';
+import { OverviewPage } from './pages/Overview/Page';
+import { WeatherService } from './services/WeatherService';
+import { EngineService } from './services/EngineService';
+import { PlayerService } from './services/player.service';
+import { Notification } from './components/Notification';
 
 function App() {
 
+  const ref = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+    // ref.current.requestFullscreen();
+  }, [ref.current]);
   const [isHidden, setIsHidden] = useState(false);
   const [msg, setMsg] = useState<string>("");
 
@@ -36,28 +50,41 @@ function App() {
 
   return (
     <ThemeProvider theme={DefaultTheme}>
-      <Wrapper>
-        {
-          !!msg && isHidden && <AIMsg>{msg}</AIMsg>
-        }
-        <ContentWrapper isHidden={isHidden}>
-        <BrowserRouter>
-          <Content>
-            <Routes>
-              <Route path='/' Component={MusicPage} />
-              <Route path='/navigation' Component={NavigationPage} />
-              <Route path='/youtube' Component={Youtube} />
-            </Routes>
-          </Content>
-          <SidebarWrapper>
-            <Sidebar />
-          </SidebarWrapper>
-        </BrowserRouter>
-        </ContentWrapper>
-      </Wrapper>
+      <EngineService>
+        <PlayerService>
+        <Notification>
+          <Wrapper ref={ref}>
+            <BrowserRouter>
+              <Routes>
+                <Route path='/dashboard' Component={Dashboard} />
+                <Route path='/media' Component={Media}>
+                  <Route path='overview' Component={OverviewPage} />
+                  <Route path='music' Component={MusicPage} />
+                  <Route path='navigation' Component={NavigationPage} />
+                  <Route path='youtube' Component={Youtube} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </Wrapper>
+        </Notification>
+        </PlayerService>
+      </EngineService>
     </ThemeProvider>
   );
 }
+
+const Media = () => {
+  return <WeatherService>
+      <ContentWrapper isHidden={false}>
+        <SidebarWrapper>
+          <Sidebar />
+        </SidebarWrapper>
+        <Content>
+          <Outlet />
+        </Content>
+      </ContentWrapper>
+  </WeatherService>
+};
 
 const AIMsg = styled.div`
   position: absolute;
@@ -75,7 +102,7 @@ const Wrapper = styled.div`
   overflow: hidden;
 `;
 
-const ContentWrapper = styled.div<{isHidden: boolean}>`
+const ContentWrapper = styled.div<{ isHidden: boolean }>`
   width: 100%;
   height: 100%;
   ${({ isHidden }) => isHidden ? `
@@ -85,14 +112,18 @@ const ContentWrapper = styled.div<{isHidden: boolean}>`
   ` : ""}
   transition: transform 1s, filter 1s;
   transform-origin: top center;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  position: relative;
+  gap: 20px;
 `;
 
 const SidebarWrapper = styled.div`
   height: 100%;
   width: fit-content;
-  position: absolute;
   top: 0;
-  left: 12px;
+  z-index: 1;
 `;
 
 const Content = styled.div`

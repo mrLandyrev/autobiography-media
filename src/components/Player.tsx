@@ -30,7 +30,7 @@ export const Player: FC = () => {
             if (!qRef.current) {
                 return
             }
-            setPos(Math.ceil(qRef.current.scrollLeft / 150));
+            setPos(Math.round((qRef.current.scrollLeft-142) / 150));
             console.log(qRef.current.scrollLeft)
         }
 
@@ -39,7 +39,7 @@ export const Player: FC = () => {
 
     return <Wrapper>
         <Queue ref={qRef}>
-            <div style={{minWidth: 350, maxWidth: 350, height: "100%"}}></div>
+        <div style={{ minWidth: 142,  border: "1px solid red" }}>1</div>
             {
                 queue.map((track, index) => <Track
                     id={track}
@@ -51,7 +51,7 @@ export const Player: FC = () => {
                 />
                 )
             }
-            <div style={{minWidth: 1420, maxWidth: 1420, height: "100%"}}></div>
+        <div style={{ minWidth: 1920 - 142, height: 100, border: "1px solid red" }}>1</div>
         </Queue>
     </Wrapper>
 }
@@ -90,7 +90,7 @@ const Track: FC<{ id: string, current?: number, rotated: boolean, offseted: bool
 
 const Anchor = styled.div<{ rotated?: boolean }>`
     height: 500px;
-    min-width: 150px;
+    min-width: 500px;
     position: relative;
     perspective: 1000px;
     /* transition: min-width 500ms linear; */
@@ -104,7 +104,6 @@ const Box = styled(Papper)<{ rotated: boolean, offseted: boolean }>`
     position: absolute;
     top: 0;
     left: 0;
-    transform: ${props => props.rotated ? props.offseted ? "translateX(-300px) translateZ(-500px) rotateY(50deg)" : "translateZ(-500px) rotateY(50deg)" : "translateZ(0) translateX(-200px) rotateY(0)"};
     transform-origin: center right;
     transition: transform 500ms linear;
     z-index: ${props => props.rotated ? 0 : 1};
@@ -112,10 +111,11 @@ const Box = styled(Papper)<{ rotated: boolean, offseted: boolean }>`
 
 const Queue = styled.div`
     width: 100%;
-    height: fit-content;
+    height: 100%;
     display: flex;
     overflow-x: scroll;
     perspective: 720px;
+    border: 1px solid red;
 `;
 
 const Wrapper = styled.div`
@@ -125,6 +125,8 @@ const Wrapper = styled.div`
     flex-direction: column;
     color: white;
     position: absolute;
+    left: 0;
+    top: 0;
 `;
 
 const Title = styled.div`

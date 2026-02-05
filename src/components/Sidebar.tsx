@@ -2,25 +2,28 @@ import { FC, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import LibraryMusicOutlinedIcon from '@mui/icons-material/LibraryMusicOutlined';
 import NavigationOutlinedIcon from '@mui/icons-material/NavigationOutlined';
+import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Link, NavLink } from "react-router";
 import { Papper } from "./Papper";
-import { Clock } from "./Clock";
+import { Clock } from "../pages/Overview/Clock";
 
 export const Sidebar: FC = () => {
     return <Wrapper>
         <Container>
-            <Section to={"/navigation"}>
+            <Section to={"overview"}>
+                <DirectionsCarFilledOutlinedIcon />
+            </Section>
+            <Section to={"navigation"}>
                 <NavigationOutlinedIcon />
             </Section>
-            <Section to={"/"}>
+            <Section to={"music"}>
                 <LibraryMusicOutlinedIcon />
             </Section>
-            <Section to={"/youtube"}>
+            <Section to={"youtube"}>
                 <YouTubeIcon />
             </Section>
         </Container>
-        <Clock/>
     </Wrapper>
 };
 
@@ -29,7 +32,7 @@ const Wrapper = styled.div`
     flex-direction: column;
     height: 100%;
     width: 128px;
-    gap: 12px;
+    gap: 20px;
 `;
 
 const Container = styled(Papper)`
@@ -42,15 +45,16 @@ const Section = styled(NavLink)`
     height: 100%;
     display: grid;
     place-items: center;
-    color: #363636;
-    border-radius: 12px;
+    color: gray;
+    border-radius: 20px;
     position: static;
+    transition: 200ms;
     &:visited {
-        color: #363636;
+        color: gray;
     }
     &.active {
-        background: ${props => props.theme.colors.default};
-        color: ${props => props.theme.colors.primary};
+        background: ${props => props.theme.colors.primary};
+        color: white;
     }
     & * {
         font-size: 50px !important;

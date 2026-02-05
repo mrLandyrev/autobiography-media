@@ -7,6 +7,8 @@ import { useSearchTracksQuery } from "../store/searchTracksApi";
 import { Track } from "./Track";
 import useDebounce from "../utils/useDebounce";
 import { SearchInput } from "./SearchInput";
+import Keyboard from "react-simple-keyboard";
+import { Papper } from "./Papper";
 
 export const SearchTracks: FC = () => {
     const query = useSelector((state: RootState) => state.searchTracksSlice.query);
@@ -15,46 +17,48 @@ export const SearchTracks: FC = () => {
     const { isFetching } = useSearchTracksQuery(debouncedQ);
 
     return <Wrapper>
-        <SearchInput value={query} />
         <List>
             {
                 !!isFetching
                     ?
                     <div style={{color: "white"}}>"loading"</div>
                     :
-                    <ListContent>
+                    <>
                         {
                             list.map((track) => <Track {...track} />)
                         }
-                    </ListContent>
+                    </>
             }
 
         </List>
+        <SearchInput value={query} />
+        <Keyboard layout={{
+            'ru': [
+                "1 2 3 4 5 6 7 8 9 0",
+                "\u0439 \u0446 \u0443 \u043a \u0435 \u043d \u0433 \u0448 \u0449 \u0437 \u0445 \u044a",
+                "\u0444 \u044b \u0432 \u0430 \u043f \u0440 \u043e \u043b \u0434 \u0436 \u044d",
+                "\u044f \u0447 \u0441 \u043c \u0438 \u0442 \u044c \u0431 \u044e",
+                "{space} {bksp} / ,",
+            ]
+        }} layoutName="ru"/>
     </Wrapper>
 };
 
-const Wrapper = styled.div`
-    height: 100%;
-    width: 400px;
-    display: flex;
-    flex-direction: column;
+const Wrapper = styled(Papper)`
+    display: grid;
     gap: 12px;
-    overflow: hidden;
     z-index: 1;
+    grid-template-rows: 1fr auto 300px;
+    & > * {
+        overflow: hidden;
+    }
 `;
 
 const List = styled.div`
+    overflow-y: scroll;
     width: 100%;
     height: 100%;
-    border-radius: 12px;
-    padding: 8px;
-    overflow-y: scroll;
-    border: 2px solid gray;
-`;
-
-const ListContent = styled.div`
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
 `;

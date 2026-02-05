@@ -14,9 +14,14 @@ export type GeoJSON = {
 }
 
 export type Route = {
+    duration: number;
+    distance: number;
     geometry: GeoJSON,
     legs: Array<{
         steps: Array<RouteStep>,
+        summary: string,
+        duration: number,
+        distance: number,
     }>
 };
 
@@ -29,5 +34,6 @@ export type RouteStep = {
         ],
         bearing_before: number,
     },
+    distance: number;
     name: string,
 }
