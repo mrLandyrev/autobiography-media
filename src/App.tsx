@@ -2,17 +2,15 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import styled, { ThemeProvider } from 'styled-components';
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router';
-import { MusicPage } from './pages/Music';
 import { NavigationPage } from './pages/Navigation/Navigation';
 import { DefaultTheme } from './types/theme';
 import { Youtube } from './pages/Youtube';
 import "react-simple-keyboard/build/css/index.css";
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { OverviewPage } from './pages/Overview/Page';
-import { WeatherService } from './services/WeatherService';
-import { EngineService } from './services/EngineService';
 import { PlayerService } from './services/player.service';
 import { Notification } from './components/Notification';
+import { MusicPage } from './pages/Music/Page';
 
 function App() {
 
@@ -50,40 +48,36 @@ function App() {
 
   return (
     <ThemeProvider theme={DefaultTheme}>
-      <EngineService>
-        <PlayerService>
-        <Notification>
-          <Wrapper ref={ref}>
-            <BrowserRouter>
-              <Routes>
-                <Route path='/dashboard' Component={Dashboard} />
-                <Route path='/media' Component={Media}>
-                  <Route path='overview' Component={OverviewPage} />
-                  <Route path='music' Component={MusicPage} />
-                  <Route path='navigation' Component={NavigationPage} />
-                  <Route path='youtube' Component={Youtube} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </Wrapper>
-        </Notification>
-        </PlayerService>
-      </EngineService>
+      <PlayerService>
+      <Notification>
+        <Wrapper ref={ref}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/dashboard' Component={Dashboard} />
+              <Route path='/media' Component={Media}>
+                <Route path='overview' Component={OverviewPage} />
+                <Route path='music' Component={MusicPage} />
+                <Route path='navigation' Component={NavigationPage} />
+                <Route path='youtube' Component={Youtube} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </Wrapper>
+      </Notification>
+      </PlayerService>
     </ThemeProvider>
   );
 }
 
 const Media = () => {
-  return <WeatherService>
-      <ContentWrapper isHidden={false}>
-        <SidebarWrapper>
-          <Sidebar />
-        </SidebarWrapper>
-        <Content>
-          <Outlet />
-        </Content>
-      </ContentWrapper>
-  </WeatherService>
+  return <ContentWrapper isHidden={false}>
+    <SidebarWrapper>
+      <Sidebar />
+    </SidebarWrapper>
+    <Content>
+      <Outlet />
+    </Content>
+  </ContentWrapper>
 };
 
 const AIMsg = styled.div`

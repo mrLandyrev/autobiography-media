@@ -5,5 +5,4 @@ export type TrackType = {
   authors: Array<string>;
   cover: string;
   downloaded: boolean;
-  total: number;
 }

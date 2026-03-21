@@ -4,9 +4,10 @@ import { RootState } from "../../store/store";
 import styled from "styled-components";
 import { Papper } from "../../components/Papper";
 import { Label } from "../../components/Label";
+import { useMqtt } from "../../mqtt";
 
 export const Forecast: React.FC = () => {
-    const forecast = useSelector((state: RootState) => state.weatherReducer.forecast);
+    const {value: forecast} = useMqtt("/weather/forecast");
     const formatter = useMemo(() => Intl.DateTimeFormat("en-US", {
         hour: "numeric",
         hour12: true,
@@ -16,7 +17,7 @@ export const Forecast: React.FC = () => {
 
     return <Wrapper>
         {
-            forecast.map((step, index) => <Element variant={index === 2 ? "primary" : "default"}>
+            !!forecast && forecast.map((step, index) => <Element variant={index === 2 ? "primary" : "default"}>
                 <Label>
                     {index === 2 ? "now" : formatter.format(step.time).toLowerCase()}
                 </Label>

@@ -30,7 +30,7 @@ const garage: GeoPoint = {
 
 export const Navigator: React.FC = () => {
     const theme = useTheme();
-    const userPosition = useSelector((state: RootState) => state.routingSlice.userPosition);
+    const { value: userPosition } = useMqtt("/navi/position/gps");
     const nearest = useSelector((state: RootState) => state.routingSlice.nearest);
     const mapRef = useRef<MapRef>(null);
     const [m, sm] = useState(false);
@@ -53,6 +53,9 @@ export const Navigator: React.FC = () => {
     const checkToGarage = useMemo(() => checkTo(garage), [checkTo]);
 
     const goTo = useCallback(async (point: GeoPoint) => {
+        if (!userPosition) {
+            return;
+        }
         const toHomeRoute = await getRoute([userPosition, point]);
         publishWaypoints([point]);
         setActiveRoute(toHomeRoute.data || null);
@@ -67,7 +70,7 @@ export const Navigator: React.FC = () => {
     }, [setActiveRoute]);
 
     useEffect(() => {
-        if (!mapRef.current) {
+        if (!mapRef.current || !userPosition) {
             return;
         }
 
@@ -87,18 +90,21 @@ export const Navigator: React.FC = () => {
             </StepWrapper>
         }
         <Data>
-            <Position>
-                <Row>
-                    <Label variant="secondary">Позиция</Label>
-                    <Label>{userPosition.lat.toFixed(2)}/{userPosition.lon.toFixed(2)}</Label>
-                </Row>
-                {
-                    !!nearest && <Row>
-                        <Label variant="secondary">Рядом с </Label>
-                        <Label>{nearest}</Label>
+            {
+                !!userPosition && <Position>
+                    <Row>
+                        <Label variant="secondary">Позиция</Label>
+                        <Label>{userPosition.lat.toFixed(2)}/{userPosition.lon.toFixed(2)}</Label>
                     </Row>
-                }
-            </Position>
+                    {
+                        !!nearest && <Row>
+                            <Label variant="secondary">Рядом с </Label>
+                            <Label>{nearest}</Label>
+                        </Row>
+                    }
+                </Position>
+            }
+            
             {
                 activeRoute && <div>
                     <Label variant="header">

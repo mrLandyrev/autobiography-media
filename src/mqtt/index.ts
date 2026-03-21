@@ -1,6 +1,7 @@
 import mqtt from "mqtt";
 import { useCallback, useEffect, useState } from "react";
 import { GeoPoint, Route } from "../types/geo";
+import { Forecast } from "../types/forecast";
 
 type Topics = {
     "/engine/speed": number;
@@ -11,9 +12,16 @@ type Topics = {
     "/navi/active/step": number | null;
     "/navi/position/gps": GeoPoint | null;
     "/navi/active/waypoints": Array<GeoPoint>;
+    "/weather/forecast": Array<Forecast>;
+    "/music/current": { id: string | null, current: number, total: number };
+    "/music/toggle": any;
+    "/music/next": any;
+    "/music/prev": any;
+    "/music/status": "empty" | "pending" | "playing" | "stopped";
+    "/music/queue": { q: Array<string>, p: number };
 }
 
-const client = mqtt.connect("ws://192.168.2.71:9001");
+const client = mqtt.connect("ws://127.0.0.1:1884");
 
 type Handler = <T extends keyof Topics>(data: Topics[T]) => void;
 
@@ -36,7 +44,10 @@ client.on("message", (topic, payload) => {
         return;
     }
 
-    const data = JSON.parse(payload.toString());
+    let data: any = null;
+    try {
+        data = JSON.parse(payload.toString());
+    } catch {}
 
     Object.values(handlers[topic]).forEach((handler) => {
         handler(data);
@@ -56,9 +67,9 @@ const removeHandler = (topic: string, id: string) => {
     }
 }
 
-const publishValue = <T extends keyof Topics>(topic: T, data: Topics[T]) => {
+const publishValue = <T extends keyof Topics>(topic: T, data: Topics[T], retain: boolean) => {
     client.publish(topic, JSON.stringify(data), {
-        retain: true,
+        retain,
     });
 }; 
 
@@ -73,8 +84,8 @@ export const useMqtt = <T extends keyof Topics>(topic: T) => {
         return () => removeHandler(topic, id);
     }, [])
 
-    const publish = useCallback((data: Topics[T]) => {
-            publishValue(topic, data)
+    const publish = useCallback((data: Topics[T], retain: boolean = true) => {
+        publishValue(topic, data, retain);
     }, [])
 
     return { value, publish }

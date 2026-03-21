@@ -19,13 +19,13 @@ export const OverviewPage: React.FC = () => {
     const right = useSelector((state: RootState) => state.climateReducer.right);
 
     return <>
-        <Background src="/wallpapper.jpg"/>
+        {/* <Background src="/wallpapper.jpg"/> */}
         <Wrapper>
+            <Player/>
             <FirstWidget>
                 <Clock/>
                 <Forecast/>
             </FirstWidget>
-            <Player/>
             <ComforWrapper>
                 <Toggle
                     variant="full"

@@ -13,7 +13,7 @@ type NearestResponse = {
 
 export const routingApi = createApi({
     reducerPath: "routingApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://192.168.2.105:5000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:5000" }),
     endpoints: (builder) => ({
         route: builder.query<Route | undefined, Array<GeoPoint>>({
             query: (points) => {

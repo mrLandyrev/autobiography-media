@@ -1,13 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { TrackType } from '../types/tracks';
 import { PlayerData } from '../types/playerState';
+import { q } from 'react-router/dist/development/index-react-server-client-CCjKYJTH';
 
 export const tracksApi = createApi({
     reducerPath: "tracksApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://192.168.2.105:8077/" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "http://192.168.2.105:8076/" }),
     endpoints: (builder) => ({
         searchTracks: builder.query<Array<TrackType>, string>({
-            query: (query) => `search?query=${query}`,
+            query: (query) => `search?q=${query}`,
             keepUnusedDataFor: 0,
         }),
         cache: builder.query<string, string>({
@@ -39,11 +40,17 @@ export const tracksApi = createApi({
                 method: "POST",
             })
         }),
-        pause: builder.query<undefined, undefined>({
-            query: () => `pause`,
+        playQueue: builder.mutation<undefined, {q: Array<string>, p: number}>({
+            query: (body) => ({
+                url: `play?q=${body.q.join("&q=")}&p=${body.p}`,
+                method: "GET",
+            }),
         }),
-        cont: builder.query<undefined, undefined>({
-            query: () => `cont`,
+        addToQueue: builder.mutation<undefined, {q: Array<string>}>({
+            query: (body) => ({
+                url: `add?q=${body.q.join("&q=")}`,
+                method: "GET",
+            }),
         }),
     }),
 });
@@ -55,6 +62,6 @@ export const {
     useLazyCacheQuery,
     useStateQuery,
     useInfoQuery,
-    useLazyPauseQuery,
-    useLazyContQuery,
+    usePlayQueueMutation,
+    useAddToQueueMutation,
 } = tracksApi;

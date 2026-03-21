@@ -51,7 +51,7 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
             left: 0,
         }}
         onClick={onClick}
-        mapStyle="http://192.168.2.105:8086/styles/maptiler-basic/style.json"
+        mapStyle="http://127.0.0.1:8086/styles/maptiler-basic/style.json"
     >
         {
             !!activeRoute && activeRoute.legs.map((leg, index, arr) =>

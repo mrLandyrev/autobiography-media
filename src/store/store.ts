@@ -5,8 +5,6 @@ import { geocoderApi } from "./geocoderApi";
 import { routingApi } from "./rotingApi";
 import { routingReducer } from "./routingSlice";
 import { engineReducer } from "./engine/engineSlice";
-import { weatherReducer } from "./weather/slice";
-import { weatherApi } from "./weather/api";
 import { climateReducer } from "./climate/slice";
 
 export const store = configureStore({
@@ -14,18 +12,15 @@ export const store = configureStore({
         searchTracksSlice: searchTracksReducer,
         routingSlice: routingReducer,
         engineReducer: engineReducer,
-        weatherReducer: weatherReducer,
         climateReducer: climateReducer,
         [tracksApi.reducerPath]: tracksApi.reducer,
         [geocoderApi.reducerPath]: geocoderApi.reducer,
         [routingApi.reducerPath]: routingApi.reducer,
-        [weatherApi.reducerPath]: weatherApi.reducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
         tracksApi.middleware,
         geocoderApi.middleware,
         routingApi.middleware,
-        weatherApi.middleware,
     ),
 });
 

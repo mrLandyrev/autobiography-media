@@ -3,36 +3,32 @@ import { Papper } from "../../components/Papper";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import styled from "styled-components";
-import { useInfoQuery, useLazyContQuery, useLazyPauseQuery } from "../../store/searchTracksApi";
+import { useInfoQuery } from "../../store/searchTracksApi";
 import { Label } from "../../components/Label";
 import { Toggle } from "../../components/Toggle";
 import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded';
 import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded';
+import { useMqtt } from "../../mqtt";
 
 export const Player: React.FC = () => {
-    const queue = useSelector((state: RootState) => state.searchTracksSlice.queue);
-    const current = useSelector((state: RootState) => state.searchTracksSlice.current);
-    const position = useSelector((state: RootState) => state.searchTracksSlice.position);
-    const status = useSelector((state: RootState) => state.searchTracksSlice.status);
-    const { data } = useInfoQuery(queue[position]);
-    const [cont] = useLazyContQuery();
-    const [pause] = useLazyPauseQuery();
+    const { value } = useMqtt("/music/current");
+    const { publish: toggle } = useMqtt("/music/toggle");
+    const { publish: next } = useMqtt("/music/next");
+    const { publish: prev } = useMqtt("/music/prev");
+    const { value: status } = useMqtt("/music/status");
+    const { data } = useInfoQuery(value?.id ?? "");
 
     const onPlayPauseClick = useCallback(() => {
-        if (status == "playing") {
-            pause(undefined);
-        } else {
-            cont(undefined);
-        }
-    }, [status]);
+        toggle(1, false);
+    }, [toggle]);
 
     return <Wrapper>
         <CoverWrapper>
-            <Cover src={data?.cover}/>
+            <Cover src={!!data ? data.cover : ""}/>
             <Progress>
-                <ProgressBar progress={!!data ? current/data.total * 100 : 0 }/>
+                <ProgressBar progress={!!value ? value.current/value.total * 100 : 0 }/>
             </Progress>
         </CoverWrapper>
         <Data>
@@ -41,7 +37,7 @@ export const Player: React.FC = () => {
             </Info>
             <Label variant="header">{data?.title}</Label>
             <Actions>
-                <Toggle active={false}>
+                <Toggle active={false} onClick={() => prev(1, false)}>
                     <SkipPreviousRoundedIcon/>
                 </Toggle>
                 <Toggle active={true} onClick={onPlayPauseClick}>
@@ -51,7 +47,7 @@ export const Player: React.FC = () => {
                         : <PlayArrowRoundedIcon/>
                     }
                 </Toggle>
-                <Toggle active={false}>
+                <Toggle active={false} onClick={() => next(1, false)}>
                     <SkipNextRoundedIcon/>
                 </Toggle>
             </Actions>
@@ -110,4 +106,5 @@ const ProgressBar = styled.div<{ progress: number }>`
     bottom: 0;
     background: ${props => props.theme.colors.primary};
     width: ${props => props.progress}%;
+    transition: width 1s;
 `;
