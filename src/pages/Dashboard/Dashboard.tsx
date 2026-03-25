@@ -6,7 +6,7 @@ import { ModernTaho } from "./ModernTaho";
 
 export const Dashboard: React.FC = () => {
     return<>
-        <Navigation zoom={17}/>
+        <Navigation zoom={18}/>
         <Speedometer style={{
             position: "absolute",
             left: 30,

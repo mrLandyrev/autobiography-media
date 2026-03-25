@@ -72,7 +72,7 @@ export const NavigationPage: FC = () => {
 
     return <>
         <MapWrapper>
-            <Navigation onClick={goTo}>
+            <Navigation onClick={goTo} zoom={17}>
                 {
                     !!destination && <Source id="dest-route-source" type="geojson" data={destination.geometry}>
                         <Layer

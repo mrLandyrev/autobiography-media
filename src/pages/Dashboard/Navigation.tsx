@@ -1,5 +1,5 @@
-import Map, { Layer, MapLayerMouseEvent, MapRef, Marker, Source } from "react-map-gl/maplibre";
-import React, { FC, useCallback, useEffect, useRef, ReactNode } from "react"
+import Map, { Layer, MapLayerMouseEvent, MapRef, Marker, Source, ViewStateChangeEvent } from "react-map-gl/maplibre";
+import React, { FC, useCallback, useEffect, useRef, ReactNode, useState, useMemo } from "react"
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useMqtt } from "../../mqtt";
@@ -24,21 +24,48 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
     const { value: userPosition } = useMqtt("/navi/position/gps");
     const { value: activeRoute, publish: setActiveRoute} = useMqtt("/navi/active/route");
     const { value: step } = useMqtt("/navi/active/step");
+    const [auto, setAuto] = useState<boolean>(true);
+
+    const userInterctionEndHandler = useMemo(() => {
+        let id: NodeJS.Timer | undefined = undefined;
+
+        return (e: ViewStateChangeEvent) => {
+            if(!e.originalEvent?.isTrusted) {
+                return;
+            }
+            if (id !== undefined) {
+                clearTimeout(id);
+                id = undefined;
+            }
+            setAuto(false);
+            id = setTimeout(() => {
+                setAuto(true);
+                id = undefined;
+            }, 5 * 1000);
+
+            return () => {
+                console.log("postEnd");
+                if (id !== undefined) {
+                    clearInterval(id);
+                }
+            };
+        }
+    }, [setAuto]);
 
     useEffect(() => {
-        if (!mapRef.current || !userPosition) {
+        if (!mapRef.current || !userPosition || !auto) {
             return;
         }
 
         mapRef.current.fitBounds([userPosition, userPosition], { zoom: zoom || 15, linear: true });
-    }, [userPosition, mapRef.current])
+    }, [userPosition, mapRef.current, zoom, auto])
 
     return <Map
         ref={mapRef}
         initialViewState={{
             longitude: userPosition?.lon || 0,
             latitude: userPosition?.lat || 0,
-            zoom: zoom || 15,
+            zoom: zoom || 19,
             pitch: 71,
             bearing: 68.1,
         }}
@@ -52,6 +79,9 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
         }}
         onClick={onClick}
         mapStyle="http://127.0.0.1:8086/styles/maptiler-basic/style.json"
+        onMoveEnd={userInterctionEndHandler}
+        onZoom={userInterctionEndHandler}
+        onRotateEnd={userInterctionEndHandler}
     >
         {
             !!activeRoute && activeRoute.legs.map((leg, index, arr) =>

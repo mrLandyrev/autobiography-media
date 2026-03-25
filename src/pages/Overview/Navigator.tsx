@@ -79,7 +79,7 @@ export const Navigator: React.FC = () => {
 
     return <Wrapper>
         <MapWrapper>
-            <Navigation/>
+            <Navigation zoom={17}/>
         </MapWrapper>
         {
             activeRoute && <StepWrapper variant="primary">
