@@ -26,31 +26,31 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
     const { value: step } = useMqtt("/navi/active/step");
     const [auto, setAuto] = useState<boolean>(true);
 
-    const userInterctionEndHandler = useMemo(() => {
-        let id: NodeJS.Timer | undefined = undefined;
+    const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-        return (e: ViewStateChangeEvent) => {
-            if(!e.originalEvent?.isTrusted) {
-                return;
-            }
-            if (id !== undefined) {
-                clearTimeout(id);
-                id = undefined;
-            }
-            setAuto(false);
-            id = setTimeout(() => {
-                setAuto(true);
-                id = undefined;
-            }, 5 * 1000);
-
-            return () => {
-                console.log("postEnd");
-                if (id !== undefined) {
-                    clearInterval(id);
-                }
+    useEffect(() => {
+        return () => {
+            if (timerRef.current !== undefined) {
+                clearTimeout(timerRef.current);
+                timerRef.current = undefined;
             };
+        };
+    }, [setAuto, timerRef])
+
+    const userInterctionEndHandler = useCallback((e: ViewStateChangeEvent) => {
+        if(!e.originalEvent?.isTrusted) {
+            return;
         }
-    }, [setAuto]);
+        if (timerRef.current !== undefined) {
+            clearTimeout(timerRef.current);
+            timerRef.current = undefined;
+        }
+        setAuto(false);
+        timerRef.current = setTimeout(() => {
+            setAuto(true);
+            timerRef.current = undefined;
+        }, 5 * 1000);
+    }, [setAuto, timerRef]);
 
     useEffect(() => {
         if (!mapRef.current || !userPosition || !auto) {
