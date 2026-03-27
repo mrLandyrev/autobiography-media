@@ -11,6 +11,7 @@ type Topics = {
     "/navi/active/route": Route | null;
     "/navi/active/step": number | null;
     "/navi/position/gps": GeoPoint | null;
+    "/navi/position/bearing": number | null;
     "/navi/active/waypoints": Array<GeoPoint>;
     "/weather/forecast": Array<Forecast>;
     "/music/current": { id: string | null, current: number, total: number };

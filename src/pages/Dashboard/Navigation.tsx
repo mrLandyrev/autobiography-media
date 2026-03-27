@@ -22,6 +22,7 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
     const theme = useTheme();
     const mapRef = useRef<MapRef | null>(null);
     const { value: userPosition } = useMqtt("/navi/position/gps");
+    const { value: bearing } = useMqtt("/navi/position/bearing");
     const { value: activeRoute, publish: setActiveRoute} = useMqtt("/navi/active/route");
     const { value: step } = useMqtt("/navi/active/step");
     const [auto, setAuto] = useState<boolean>(true);
@@ -57,8 +58,8 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
             return;
         }
 
-        mapRef.current.fitBounds([userPosition, userPosition], { zoom: zoom || 15, linear: true });
-    }, [userPosition, mapRef.current, zoom, auto])
+        mapRef.current.fitBounds([userPosition, userPosition], { zoom: zoom || 15, linear: true, bearing: bearing || 0 });
+    }, [userPosition, mapRef.current, zoom, auto, bearing])
 
     return <Map
         ref={mapRef}
@@ -131,6 +132,7 @@ export const Navigation: FC<NavigationProps> = ({ onClick, children, zoom }) => 
                 latitude={userPosition.lat}
                 pitchAlignment="map"
                 rotationAlignment="map"
+                rotation={bearing || 0}
             >  
                 <NavigationRoundedIcon style={{fontSize: 40, color: "white"}}/>
             </Marker>
