@@ -1,0 +1,5 @@
+services:
+  media:
+    build: .
+    ports:
+    - "877:80"
