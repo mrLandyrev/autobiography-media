@@ -20,6 +20,7 @@ type Topics = {
     "/music/prev": any;
     "/music/status": "empty" | "pending" | "playing" | "stopped";
     "/music/queue": { q: Array<string>, p: number };
+    "/navi/active/distanceToNextPoint": number;
 }
 
 const client = mqtt.connect("ws://127.0.0.1:1884");

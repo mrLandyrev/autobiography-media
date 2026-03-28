@@ -13,6 +13,7 @@ import { Layer, Source } from "react-map-gl/maplibre";
 import { Toggle } from "../../components/Toggle";
 import { formatRouteDistance, formatRouteTime } from "../../utils/formatters";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
+import { NavigationBar } from "./NavigationBar";
 
 export const NavigationPage: FC = () => {
     const theme = useTheme();
@@ -89,6 +90,9 @@ export const NavigationPage: FC = () => {
             </Navigation>
         </MapWrapper>
         <Wrapper>
+            <BarWrapper>
+                <NavigationBar/>
+            </BarWrapper>
             {
                 !!destination && <DestinationWrapper>
                     <Papper>
@@ -130,9 +134,9 @@ export const NavigationPage: FC = () => {
                     </Papper>
                 </DestinationWrapper>
             }
-            <StepsWrapper>
+            {/* <StepsWrapper>
                 <StepsWidget/>
-            </StepsWrapper>
+            </StepsWrapper> */}
         </Wrapper>
     </>
 };
@@ -143,10 +147,18 @@ const Wrapper = styled.div`
     display: grid;
     z-index: 0;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr auto;
+    gap: 20px;
 
     & > * {
         overflow: hidden;
     }
+`;
+
+const BarWrapper = styled.div`
+    grid-row: 2;
+    z-index: 1;
+    grid-column: 1 / 5;
 `;
 
 const MapWrapper = styled.div`

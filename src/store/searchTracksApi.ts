@@ -5,7 +5,7 @@ import { q } from 'react-router/dist/development/index-react-server-client-CCjKY
 
 export const tracksApi = createApi({
     reducerPath: "tracksApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://192.168.2.105:8076/" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8076/" }),
     endpoints: (builder) => ({
         searchTracks: builder.query<Array<TrackType>, string>({
             query: (query) => `search?q=${query}`,

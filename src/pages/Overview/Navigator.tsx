@@ -38,6 +38,7 @@ export const Navigator: React.FC = () => {
     const {value: activeRoute, publish: setActiveRoute} = useMqtt("/navi/active/route");
     const activeStep = useSelector((state: RootState) => state.routingSlice.step);
     const { publish: publishWaypoints } = useMqtt("/navi/active/waypoints");
+    const {value: distanceToNextPoint } = useMqtt("/navi/active/distanceToNextPoint");
 
     const checkTo = useCallback((point: GeoPoint) => {
         const lastStep = activeRoute?.legs.at(-1)?.steps.at(-1)?.maneuver.location;
@@ -85,7 +86,7 @@ export const Navigator: React.FC = () => {
             activeRoute && <StepWrapper variant="primary">
                 <TurnIcon maneur={activeRoute.legs[0].steps[activeStep].maneuver.modifier} />
                 <Label>
-                    {formatRouteDistance(activeRoute.legs[0].steps[activeStep].distance)} на {activeRoute.legs[0].steps[activeStep].name}
+                    {formatRouteDistance(distanceToNextPoint || 0)} на {activeRoute.legs[0].steps[activeStep].name}
                 </Label>
             </StepWrapper>
         }

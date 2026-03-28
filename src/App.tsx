@@ -11,6 +11,7 @@ import { OverviewPage } from './pages/Overview/Page';
 import { PlayerService } from './services/player.service';
 import { Notification } from './components/Notification';
 import { MusicPage } from './pages/Music/Page';
+import { StatsPage } from './pages/Stats/Page';
 
 function App() {
 
@@ -59,6 +60,7 @@ function App() {
                 <Route path='music' Component={MusicPage} />
                 <Route path='navigation' Component={NavigationPage} />
                 <Route path='youtube' Component={Youtube} />
+                <Route path='stats' Component={StatsPage} />
               </Route>
             </Routes>
           </BrowserRouter>

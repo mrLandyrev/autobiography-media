@@ -7,6 +7,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Link, NavLink } from "react-router";
 import { Papper } from "./Papper";
 import { Clock } from "../pages/Overview/Clock";
+import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
 
 export const Sidebar: FC = () => {
     return <Wrapper>
@@ -22,6 +23,9 @@ export const Sidebar: FC = () => {
             </Section>
             <Section to={"youtube"}>
                 <YouTubeIcon />
+            </Section>
+            <Section to={"stats"}>
+                <QueryStatsOutlinedIcon />
             </Section>
         </Container>
     </Wrapper>
