@@ -26,121 +26,59 @@ export const StatsPage: FC = () => {
             {
                 data && 
                 <Chart
+                    unit="%"
                     min={0}
                     max={100}
-                    data={data.data.result[0].values.map((x: any) => x[1]) || [0]}
+                    data={data.data.result[0].values.map((x: any) => +x[1])}
                 />
             }
-            <Label>% CPU</Label>
+            <Label>CPU</Label>
         </ChartContainer>
         <ChartContainer>
             {
                 ramUsage && <Chart
+                    unit="%"
                     min={0}
                     max={100}
-                    data={ramUsage.data.result[0].values.map((x: any) => x[1])}
+                    data={ramUsage.data.result[0].values.map((x: any) => +x[1])}
                 />
             }
-            <Label>% RAM</Label>
+            <Label>RAM</Label>
         </ChartContainer>
         <ChartContainer>
             {
                 diskUsage && <Chart
+                    unit="%"
                     min={0}
                     max={100}
-                    data={diskUsage.data.result[0].values.map((x: any) => x[1])}
+                    data={diskUsage.data.result[0].values.map((x: any) => +x[1])}
                 />
             }
-            <Label>% использование диска</Label>
+            <Label>использование диска</Label>
         </ChartContainer>
         <ChartContainer>
             {
                 free && <Chart
+                    unit="%"
                     min={0}
                     max={100}
-                    data={free.data.result[0].values.map((x: any) => x[1])}
+                    data={free.data.result[0].values.map((x: any) => +x[1])}
                 />
             }
-            <Label>% занятое место</Label>
+            <Label>занятое место</Label>
         </ChartContainer>
         <ChartContainer>
             {
                 cpuTemp && 
                 <Chart
+                    unit=" C"
                     min={0}
                     max={100}
-                    data={cpuTemp.data.result[0].values.map((x: any) => x[1]) || [0]}
+                    data={cpuTemp.data.result[0].values.map((x: any) => +x[1])}
                 />
             }
-            <Label>^C температура CPU</Label>
+            <Label>температура CPU</Label>
         </ChartContainer>
-        {/* <ThemeProvider theme={darkTheme}>
-            <Papper>
-                {
-                    data &&
-                    <LineChart
-                        xAxis={[{ data: data.data.result[0].values.map((x: any) => x[0]) }]}
-                        series={[{ data: data.data.result[0].values.map((x: any) => x[1]), color: theme.colors.primary }]}
-                        grid={{ vertical: true, horizontal: true }}
-                        yAxis={[{ min: 0, max: 100 }]}
-                        height={250}
-                    />
-                }
-                <Label>% CPU usage</Label>
-            </Papper>
-            <Papper>
-                {
-                    ramUsage &&
-                    <LineChart
-                        xAxis={[{ data: ramUsage.data.result[0].values.map((x: any) => x[0]) }]}
-                        series={[{ data: ramUsage.data.result[0].values.map((x: any) => x[1]), color: theme.colors.primary }]}
-                        yAxis={[{ min: 0, max: 100 }]}
-                        grid={{ vertical: true, horizontal: true }}
-                        height={250}
-                    />
-                }
-                <Label>% RAM usage</Label>
-            </Papper>
-            <Papper>
-                {
-                    diskUsage &&
-                    <LineChart
-                        xAxis={[{ data: diskUsage.data.result[0].values.map((x: any) => x[0]) }]}
-                        series={[{ data: diskUsage.data.result[0].values.map((x: any) => x[1]), color: theme.colors.primary }]}
-                        yAxis={[{ min: 0, max: 100 }]}
-                        grid={{ vertical: true, horizontal: true }}
-                        height={250}
-                    />
-                }
-                <Label>% disk usage</Label>
-            </Papper>
-            <Papper>
-                {
-                    free &&
-                    <LineChart
-                        xAxis={[{ data: free.data.result[0].values.map((x: any) => x[0]) }]}
-                        series={[{ data: free.data.result[0].values.map((x: any) => x[1]), color: theme.colors.primary }]}
-                        yAxis={[{ min: 0, max: 100 }]}
-                        grid={{ vertical: true, horizontal: true }}
-                        height={250}
-                    />
-                }
-                <Label>% disk space usage</Label>
-            </Papper>
-            <Papper>
-                {
-                    cpuTemp &&
-                    <LineChart
-                        xAxis={[{ data: cpuTemp.data.result[0].values.map((x: any) => x[0]) }]}
-                        series={[{ data: cpuTemp.data.result[0].values.map((x: any) => x[1]), color: theme.colors.primary }]}
-                        yAxis={[{ min: 0, max: 100 }]}
-                        grid={{ vertical: true, horizontal: true }}
-                        height={250}
-                    />
-                }
-                <Label>^C CPU temp</Label>
-            </Papper>
-        </ThemeProvider> */}
     </Wrapper>
 };
 
@@ -156,9 +94,10 @@ type ChartProps = {
     min: number;
     max: number;
     data: Array<number>;
+    unit: string;
 };
 
-const Chart: FC<ChartProps> = ({ min, max, data }) => {
+const Chart: FC<ChartProps> = ({ min, max, data, unit }) => {
     const ref = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const [size, setSize] = useState({ w: 0, h: 0 });
@@ -173,13 +112,38 @@ const Chart: FC<ChartProps> = ({ min, max, data }) => {
             return;
         }
 
+        // clear all
         ctx.clearRect(0, 0, size.w, size.h);
+
+        // create legend
+        ctx.lineWidth= 1;
+        ctx.strokeStyle = "rgba(100, 100, 100, 0.1)";
+        ctx.beginPath();
+        for (let i = 0; i <= 10; i ++) {
+            ctx.moveTo(0, size.h * (i/10));
+            ctx.lineTo(size.w, size.h * (i/10));
+            ctx.moveTo(size.w * (i/10), size.h);
+            ctx.lineTo(size.w * (i/10), 0);
+        }
+        ctx.stroke();
+
+        ctx.strokeStyle = "white";
+        ctx.beginPath()
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, size.h);
+        ctx.lineTo(size.w, size.h);
+        ctx.stroke()
+
+        // write chart background
+        // create gradient 
         ctx.strokeStyle = theme.colors.primary;
         ctx.lineWidth = 5;
         const gradient = ctx.createLinearGradient(0, 0, 0, size.h);
         gradient.addColorStop(1 - (Math.max(...data) - min)/(max - min), `color-mix(in oklab, ${theme.colors.primary}, transparent`);
         gradient.addColorStop(1, "transparent");
         ctx.fillStyle = gradient;
+
+        // create background
         ctx.beginPath();
         ctx.moveTo(0, size.h);
         data.forEach((e, i, arr) => {
@@ -188,6 +152,8 @@ const Chart: FC<ChartProps> = ({ min, max, data }) => {
         ctx.lineTo(size.w, size.h);
         ctx.lineTo(0, size.h);
         ctx.fill();
+
+        //create graph line
         ctx.beginPath();
         ctx.moveTo(0, size.h - (data[0]! - min)/(max - min) * size.h);
         data.forEach((e, i, arr) => {
@@ -195,7 +161,14 @@ const Chart: FC<ChartProps> = ({ min, max, data }) => {
         });
         ctx.stroke()
 
-    }, [ref.current, size, data, theme]);
+        // create value
+        ctx.fillStyle = "white";
+        ctx.font = "50px Science Gothic";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(((data.at(-1) || 0).toFixed(0) + unit).toUpperCase(), size.w/2, size.h/2, size.w)
+
+    }, [ref.current, size, data, theme, min, max, unit]);
 
     useLayoutEffect(() => {
         if (!containerRef.current) return;

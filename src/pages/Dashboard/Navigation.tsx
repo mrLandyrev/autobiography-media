@@ -1,16 +1,11 @@
 import Map, { Layer, MapLayerMouseEvent, MapRef, Marker, Source, ViewStateChangeEvent } from "react-map-gl/maplibre";
-import React, { FC, useCallback, useEffect, useRef, ReactNode, useState, useMemo } from "react"
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { FC, useCallback, useEffect, useRef, ReactNode, useState } from "react"
 import { useMqtt } from "../../mqtt";
 import NavigationRoundedIcon from '@mui/icons-material/NavigationRounded';
 import { useTheme } from "styled-components";
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Papper } from "../../components/Papper";
 import { TurnIcon } from "../../components/TyrnIcon";
-import { GeoPoint } from "../../types/geo";
-import { useLazyRouteQuery } from "../../store/rotingApi";
-import SportsScoreOutlinedIcon from '@mui/icons-material/SportsScoreOutlined';
 
 export type NavigationProps = {
     zoom?: number;

@@ -3,53 +3,53 @@ import { useMqtt } from "../../mqtt";
 import styled from "styled-components";
 import { Papper } from "../../components/Papper";
 import { Label } from "../../components/Label";
-import { Route, RouteStep } from "../../types/geo";
+import { RouteStep } from "../../types/geo";
 import { formatRouteDistance, formatRouteTime } from "../../utils/formatters";
 import { TurnIcon } from "../../components/TyrnIcon";
 import { Toggle } from "../../components/Toggle";
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 
 export const NavigationBar: FC<{}> = ({}) => {
-    const {value: currentStep } = useMqtt("/navi/active/step");
-    const {value: activeRoute, publish: setActiveRoute } = useMqtt("/navi/active/route");
-    const {value: distanceToNextPoint } = useMqtt("/navi/active/distanceToNextPoint");
+    const { value: currentStep } = useMqtt("/navi/active/step");
+    const { value: activeRoute, publish: setActiveRoute } = useMqtt("/navi/active/route");
+    const { value: distanceToNextPoint } = useMqtt("/navi/active/distanceToNextPoint");
 
     const clear = useCallback(() => {
         setActiveRoute(null);
     }, [setActiveRoute]);
-    
+
     return <Spacer>
-            {
-                activeRoute && <>
-                    <Papper>
+        {
+            activeRoute && <>
+                <Papper>
                     <Toggle onClick={clear}>
-                        <ClearOutlinedIcon/>
+                        <ClearOutlinedIcon />
                     </Toggle>
-                    </Papper>
-                    <Papper>
-                        <Info>
-                            <Label variant="header">{formatRouteTime(activeRoute.duration)}</Label>
-                            <Label variant="secondary">{formatRouteDistance(activeRoute.distance)}</Label>
-                        </Info>
-                    </Papper>
-                    <StepsWrapper>
-                        <Steps>
-                            {
-                                activeRoute.legs.reduce((acc, leg) => [...acc, ...leg.steps], new Array<RouteStep>(0)).map((step, index, arr) => <>
-                                    <Toggle active={index === currentStep && distanceToNextPoint! < 50}>
-                                        <TurnIcon maneur={step.maneuver.modifier} />
-                                    </Toggle>
-                                    <Distance variant="fit" progress={index + 1 === currentStep ? 1 - distanceToNextPoint! / step.distance : 0}>
-                                        <Label style={{padding: "0 20px"}} variant={index + 1 === currentStep ? undefined : "secondary"}>{formatRouteDistance(step.distance)}</Label>
-                                    </Distance>
-                                </>
-                                )
-                            }
-                        </Steps>
-                    </StepsWrapper>
-                </>
-            }
-        </Spacer>
+                </Papper>
+                <Papper>
+                    <Info>
+                        <Label variant="header">{formatRouteTime(activeRoute.duration)}</Label>
+                        <Label variant="secondary">{formatRouteDistance(activeRoute.distance)}</Label>
+                    </Info>
+                </Papper>
+                <StepsWrapper>
+                    <Steps>
+                        {
+                            activeRoute.legs.reduce((acc, leg) => [...acc, ...leg.steps], new Array<RouteStep>(0)).map((step, index, arr) => <>
+                                <Toggle active={index === currentStep && distanceToNextPoint! < 50}>
+                                    <TurnIcon maneur={step.maneuver.modifier} />
+                                </Toggle>
+                                <Distance variant="fit" progress={index + 1 === currentStep ? 1 - distanceToNextPoint! / step.distance : 0}>
+                                    <Label style={{ padding: "0 20px" }} variant={index + 1 === currentStep ? undefined : "secondary"}>{formatRouteDistance(step.distance)}</Label>
+                                </Distance>
+                            </>
+                            )
+                        }
+                    </Steps>
+                </StepsWrapper>
+            </>
+        }
+    </Spacer>
 };
 
 const Spacer = styled.div`
@@ -67,6 +67,8 @@ const Info = styled.div`
 
 const StepsWrapper = styled.div`
     position: relative;
+    width: fit-content;
+    max-width: 100%;
 
     &::before {
         content: "";
@@ -106,7 +108,7 @@ const Steps = styled(Papper)`
     }
 `;
 
-const Distance = styled(Toggle)<{ progress: number }>`
+const Distance = styled(Toggle) <{ progress: number }>`
     position: relative;
 
     & > * {
