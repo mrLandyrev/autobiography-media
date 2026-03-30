@@ -3,3 +3,4 @@ build/
 Dockerfile
 .dockerignore
 docker-compose.yaml
+.github/*

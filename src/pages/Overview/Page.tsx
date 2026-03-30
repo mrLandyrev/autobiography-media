@@ -11,6 +11,7 @@ import AcUnitOutlinedIcon from '@mui/icons-material/AcUnitOutlined';
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useMqtt } from "../../mqtt";
+import { Message } from "./Message";
 
 export const OverviewPage: React.FC = () => {
     const { value: pl } = useMqtt("/power/left");
@@ -26,27 +27,7 @@ export const OverviewPage: React.FC = () => {
                 <Clock/>
                 <Forecast/>
             </FirstWidget>
-            <ComforWrapper>
-                <Toggle
-                    variant="full"
-                    active={pl != 0}
-                    style={(pl || 0) < 0 ? { background: "blue" } : {}}
-                >
-                    <AirRoundedIcon/>
-                    {pl}
-                </Toggle>
-                <Toggle
-                    variant="full"
-                    active={pr != 0}
-                    style={(pr || 0) < 0 ? { background: "blue" } : {}}
-                >
-                    <AirRoundedIcon/>
-                    {pr}
-                </Toggle>
-                <Toggle variant="full">
-                    <AirRoundedIcon/>
-                </Toggle>
-            </ComforWrapper>
+            <Message/>
             <Navigator/>
         </Wrapper>
     </>
