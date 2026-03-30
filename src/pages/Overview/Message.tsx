@@ -7,7 +7,7 @@ import { Label } from "../../components/Label";
 export const Message: React.FC = () => {
     return <Wrapper>
         <Label>
-            @ "Оставайтесь голодными, оставайтесь безрассудными"
+            @ "Оставайтесь голодными, оставайтесь безрассудными new edit"
         </Label>
     </Wrapper>
 };
