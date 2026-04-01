@@ -8,6 +8,7 @@ import { Link, NavLink } from "react-router";
 import { Papper } from "./Papper";
 import { Clock } from "../pages/Overview/Clock";
 import QueryStatsOutlinedIcon from '@mui/icons-material/QueryStatsOutlined';
+import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 
 export const Sidebar: FC = () => {
     return <Wrapper>
@@ -26,6 +27,9 @@ export const Sidebar: FC = () => {
             </Section>
             <Section to={"stats"}>
                 <QueryStatsOutlinedIcon />
+            </Section>
+            <Section to={"engineering"}>
+                <EngineeringOutlinedIcon />
             </Section>
         </Container>
     </Wrapper>

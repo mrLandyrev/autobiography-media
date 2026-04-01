@@ -12,6 +12,7 @@ import { PlayerService } from './services/player.service';
 import { Notification } from './components/Notification';
 import { MusicPage } from './pages/Music/Page';
 import { StatsPage } from './pages/Stats/Page';
+import { EngineeringPage } from './pages/Engeenering/Page';
 
 function App() {
 
@@ -50,22 +51,23 @@ function App() {
   return (
     <ThemeProvider theme={DefaultTheme}>
       <PlayerService>
-      <Notification>
-        <Wrapper ref={ref}>
-          <BrowserRouter>
-            <Routes>
-              <Route path='/dashboard' Component={Dashboard} />
-              <Route path='/media' Component={Media}>
-                <Route path='overview' Component={OverviewPage} />
-                <Route path='music' Component={MusicPage} />
-                <Route path='navigation' Component={NavigationPage} />
-                <Route path='youtube' Component={Youtube} />
-                <Route path='stats' Component={StatsPage} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </Wrapper>
-      </Notification>
+        <Notification>
+          <Wrapper ref={ref}>
+            <BrowserRouter>
+              <Routes>
+                <Route path='/dashboard' Component={Dashboard} />
+                <Route path='/media' Component={Media}>
+                  <Route path='overview' Component={OverviewPage} />
+                  <Route path='music' Component={MusicPage} />
+                  <Route path='navigation' Component={NavigationPage} />
+                  <Route path='youtube' Component={Youtube} />
+                  <Route path='stats' Component={StatsPage} />
+                  <Route path='engineering' Component={EngineeringPage} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </Wrapper>
+        </Notification>
       </PlayerService>
     </ThemeProvider>
   );
